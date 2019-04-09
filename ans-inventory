@@ -1,1 +1,2 @@
-
+[php]
+php_logger ansible_connection=docker ansible_shell_executable=/bin/bash

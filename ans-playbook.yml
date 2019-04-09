@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Create logger_testing network
+      docker_network:
+        name: ltn
+        ipam_options:
+          subnet: '192.168.168.0/24'
+          gateway: 192.168.168.1
+          iprange: '192.168.168.0/24'
+
+    - name: Create apache php server
+      docker_container: 
+        name: php_logger
+        image: php:7.2-apache
+        hostname: php_logger
+        restart: yes
+        detach: yes
+        tty: yes
+        interactive: yes
+        published_ports:
+          - 80:8080
+        volumes:
+          - ./laravel:/var/www:rw
+        networks:
+          - name: ltn
+            ipv4_address: 192.168.168.2
+      
