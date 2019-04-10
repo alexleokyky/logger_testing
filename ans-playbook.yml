@@ -69,5 +69,5 @@
         - "a2enmod rewrite"
         - "sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf"
         - "sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf"
-        - 'mv "/var/www/php.ini-development" "$PHP_INI_DIR/php.ini"'
+        - 'cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"'
         - "/etc/init.d/apache2 restart"
