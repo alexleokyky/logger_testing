@@ -42,6 +42,14 @@ $app->singleton(
 );
 
 /*
+ * Enable debug bar if app debug
+ */
+
+if (env('APP_DEBUG')) {
+    $app->register(Barryvdh\Debugbar\LumenServiceProvider::class);
+}
+
+/*
 |--------------------------------------------------------------------------
 | Return The Application
 |--------------------------------------------------------------------------

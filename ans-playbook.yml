@@ -45,6 +45,8 @@
           - 80:8080
         volumes:
           - ./laravel:/var/www:rw
+        env:
+           APACHE_DOCUMENT_ROOT: "/var/www/public"
         networks:
           - name: ltn
             ipv4_address: 192.168.168.2
@@ -54,5 +56,10 @@
 - hosts: php_logger
   gather_facts: no
   pre_tasks:
-    - name: Install pdo_mysql extention
-      raw: docker-php-ext-install pdo_mysql
+    - name: Install pdo_mysql chage document root extention
+      raw: "{{ item }}"      
+      with_items:
+        - "docker-php-ext-install pdo_mysql"
+        - "sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf"
+        - "sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf"
+        - "service apache2 restart"
