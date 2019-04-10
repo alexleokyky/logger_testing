@@ -9,6 +9,29 @@
           gateway: 192.168.168.1
           iprange: '192.168.168.0/24'
 
+    - name: Create MySQL server
+      docker_container:
+        name: pl-mysql-single
+        hostname: pl-mysql-single
+        image: mysql:5.7
+        restart: yes
+        restart_policy: always
+        tty: yes
+        interactive: yes
+        detach: yes
+        exposed_ports:
+          - 3036
+        networks:
+          - name: ltn
+            ipv4_address: 192.168.168.3
+        volumes:
+          - ./data/mysql_single:/var/lib/mysql:rw
+        env:
+          MYSQL_DATABASE: "php_logger"
+          MYSQL_USER: "logger"
+          MYSQL_PASSWORD: "reggol"
+          MYSQL_ROOT_PASSWORD: "YES"
+
     - name: Create apache php server
       docker_container: 
         name: php_logger
@@ -25,4 +48,11 @@
         networks:
           - name: ltn
             ipv4_address: 192.168.168.2
-      
+        links:
+          - "pl-mysql-single:myslq_single"
+
+- hosts: php_logger
+  gather_facts: no
+  pre_tasks:
+    - name: Install pdo_mysql extention
+      raw: docker-php-ext-install pdo_mysql

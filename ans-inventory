@@ -1,2 +1,8 @@
 [php]
 php_logger ansible_connection=docker ansible_shell_executable=/bin/bash
+
+[mysql-single]
+pl-mysql-single ansible_connection=docker ansible_shell_executable=/bin/bash
+
+[mysql:children]
+mysql-single
