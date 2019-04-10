@@ -38,11 +38,17 @@
         image: php:7.2-apache
         hostname: php_logger
         restart: yes
+        restart_policy: always
         detach: yes
         tty: yes
         interactive: yes
         published_ports:
-          - 80:8080
+          - 80:80
+          - 443:443
+        exposed_ports:
+          - 80
+          - 88
+          - 443
         volumes:
           - ./laravel:/var/www:rw
         env:
@@ -60,6 +66,8 @@
       raw: "{{ item }}"      
       with_items:
         - "docker-php-ext-install pdo_mysql"
+        - "a2enmod rewrite"
         - "sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf"
         - "sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf"
-        - "service apache2 restart"
+        - 'mv "/var/www/php.ini-development" "$PHP_INI_DIR/php.ini"'
+        - "/etc/init.d/apache2 restart"
